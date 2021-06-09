@@ -6,38 +6,32 @@ mod draw;
 mod game;
 mod pixel_math;
 
-use game::{MainState, BOARD_SIZE};
+use game::MainState;
 
 use ggez::conf;
 use ggez::event;
-use ggez::graphics;
-use ggez::{Context, ContextBuilder};
-use std::env;
-use std::path;
+use ggez::{ContextBuilder, GameResult};
 
-fn main() {
+fn main() -> GameResult {
     let cb = ContextBuilder::new("Go", "ggez")
         .window_setup(conf::WindowSetup::default().title("Go: The Way of the Warrior"))
         .window_mode(conf::WindowMode::default().dimensions(
-            pixel_math::SCREEN_SIZE.0 as u32,
-            pixel_math::SCREEN_SIZE.1 as u32,
+            pixel_math::SCREEN_SIZE.0 as f32,
+            pixel_math::SCREEN_SIZE.1 as f32,
         ));
 
-    let ctx = &mut cb.build().unwrap();
+    let (mut ctx, event_loop) = cb.build().unwrap();
 
     // We add the CARGO_MANIFEST_DIR/resources do the filesystems paths so
     // we we look in the cargo project for files.
-    if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
-        let mut path = path::PathBuf::from(manifest_dir);
-        path.push("resources");
-        ctx.filesystem.mount(&path, true);
-    }
+    // if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
+    //     let mut path = path::PathBuf::from(manifest_dir);
+    //     path.push("resources");
+    //     ctx.filesystem.mount(&path, true);
+    // }
 
-    println!("{}", graphics::get_renderer_info(ctx).unwrap());
-    let state = &mut MainState::new(ctx).unwrap();
-    if let Err(e) = event::run(ctx, state) {
-        println!("Error encountered: {}", e);
-    } else {
-        println!("Game exited cleanly.");
-    }
+    // println!("{}", graphics::get_renderer_info(ctx).unwrap());
+
+    let state = MainState::new(&mut ctx).unwrap();
+    event::run(ctx, event_loop, state)
 }

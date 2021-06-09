@@ -1,13 +1,13 @@
 extern crate ggez;
 
 use game::{Board, HANDICAPS};
-use ggez::graphics;
-use ggez::graphics::{DrawMode, Mesh, MeshBuilder, Point2};
+use ggez::{graphics, mint};
+use ggez::graphics::{Mesh, MeshBuilder};
 use ggez::{Context, GameResult};
 use pixel_math;
 use pixel_math::{MARGIN, POSITION_SIZE, SCREEN_SIZE};
 
-pub fn build_game_mesh(ctx: &mut Context, board: &Board) -> GameResult<Mesh> {
+pub fn build_game_mesh(ctx: &mut Context, _board: &Board) -> GameResult<Mesh> {
     let mb = &mut MeshBuilder::new();
 
     add_grid_to_mesh(mb);
@@ -19,48 +19,59 @@ pub fn build_game_mesh(ctx: &mut Context, board: &Board) -> GameResult<Mesh> {
 
 pub fn add_board_background(ctx: &mut Context) -> GameResult<()> {
     const BEIGE: (u8, u8, u8) = (245, 245, 220);
-    graphics::set_color(ctx, BEIGE.into())?;
-    let rect = graphics::Rect::new(
-        MARGIN.0,
-        MARGIN.1,
-        SCREEN_SIZE.0 - MARGIN.0 * 2.0,
-        SCREEN_SIZE.1 - MARGIN.1 * 2.0,
-    );
-    graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)
+
+    let rect = graphics::Mesh::new_rectangle(
+        ctx,
+        graphics::DrawMode::fill(),
+        graphics::Rect::new(
+            MARGIN.0,
+            MARGIN.1,
+            SCREEN_SIZE.0 - MARGIN.0 * 2.0,
+            SCREEN_SIZE.1 - MARGIN.1 * 2.0,
+        ),
+        BEIGE.into(),
+    )?;
+
+    graphics::draw(ctx, &rect, graphics::DrawParam::default())?;
+
+    Ok(())
+
 }
 
 pub fn add_grid_to_mesh(mb: &mut MeshBuilder) {
     const LINE_WIDTH: f32 = 2.0;
+    const BLACK: (u8, u8, u8) = (0, 0, 0);
 
     for r in pixel_math::ROWS.iter() {
         mb.line(
             &[
-                Point2::new(MARGIN.0 + POSITION_SIZE.0 / 2.0, r + POSITION_SIZE.1 / 2.0),
-                Point2::new(
-                    SCREEN_SIZE.0 - MARGIN.0 - POSITION_SIZE.0 / 2.0,
-                    r + POSITION_SIZE.1 / 2.0,
-                ),
+                mint::Point2 { x: MARGIN.0 + POSITION_SIZE.0 / 2.0, y: r + POSITION_SIZE.1 / 2.0 },
+                mint::Point2 {
+                    x: SCREEN_SIZE.0 - MARGIN.0 - POSITION_SIZE.0 / 2.0,
+                    y: r + POSITION_SIZE.1 / 2.0
+                },
             ],
-            LINE_WIDTH,
-        );
+            LINE_WIDTH, BLACK.into()
+        ).unwrap();
     }
 
     for c in pixel_math::COLUMNS.iter() {
         mb.line(
             &[
-                Point2::new(c + POSITION_SIZE.0 / 2.0, MARGIN.1 + POSITION_SIZE.1 / 2.0),
-                Point2::new(
-                    c + POSITION_SIZE.0 / 2.0,
-                    SCREEN_SIZE.1 - MARGIN.1 - POSITION_SIZE.1 / 2.0,
-                ),
+                mint::Point2 { x: c + POSITION_SIZE.0 / 2.0, y: MARGIN.1 + POSITION_SIZE.1 / 2.0 },
+                mint::Point2 {
+                    x: c + POSITION_SIZE.0 / 2.0,
+                    y: SCREEN_SIZE.1 - MARGIN.1 - POSITION_SIZE.1 / 2.0
+                },
             ],
-            LINE_WIDTH,
-        );
+            LINE_WIDTH, BLACK.into()
+        ).unwrap();
     }
 }
 
-pub fn add_handicaps_to_mesh(mb: &mut MeshBuilder) {
-    for (i, j) in HANDICAPS.iter() {
+#[allow(dead_code)]
+pub fn add_handicaps_to_mesh(_mb: &mut MeshBuilder) {
+    for (_i, _j) in HANDICAPS.iter() {
         // TODO
     }
 }

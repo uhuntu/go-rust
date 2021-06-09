@@ -26,6 +26,7 @@ lazy_static! {
         .collect::<Vec<f32>>();
 }
 
+#[allow(dead_code)]
 pub fn screen_to_board(x: f32, y: f32) -> Option<(u16, u16)> {
     if x < MARGIN.0 || x > SCREEN_SIZE.0 - MARGIN.0 {
         None

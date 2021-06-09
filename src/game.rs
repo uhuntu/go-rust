@@ -1,9 +1,7 @@
 use draw;
-use ggez::conf;
 use ggez::event;
-use ggez::event::MouseButton;
 use ggez::graphics;
-use ggez::graphics::{DrawMode, Font, Point2, Text};
+use ggez::graphics::DrawParam;
 use ggez::timer;
 use ggez::{Context, GameResult};
 
@@ -23,12 +21,14 @@ lazy_static! {
     ];
 }
 
+#[allow(dead_code)]
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Piece {
     Black,
     White,
 }
 
+#[allow(dead_code)]
 pub struct Board {
     contents: Vec<Vec<Option<Piece>>>,
 }
@@ -39,10 +39,13 @@ impl Board {
         Board { contents: v }
     }
 }
+
+#[allow(dead_code)]
 pub struct MainState {
     board: Board,
     current_turn: Piece,
 }
+
 impl MainState {
     pub fn new(_ctx: &mut Context) -> GameResult<MainState> {
         let s = MainState {
@@ -65,16 +68,17 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        graphics::clear(ctx);
+        // graphics::clear(ctx);
+        graphics::clear(ctx, [0.1, 0.2, 0.3, 1.0].into());
 
         draw::add_board_background(ctx)?;
 
-        const BLACK: (u8, u8, u8) = (0, 0, 0);
+        // const BLACK: (u8, u8, u8) = (0, 0, 0);
         let game_mesh = draw::build_game_mesh(ctx, &self.board)?;
-        graphics::set_color(ctx, BLACK.into())?;
-        graphics::draw_ex(ctx, &game_mesh, Default::default())?;
+        // graphics::set_color(ctx, BLACK.into())?;
+        graphics::draw(ctx, &game_mesh, DrawParam::default())?;
 
-        graphics::present(ctx);
+        graphics::present(ctx)?;
         Ok(())
     }
 }

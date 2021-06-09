@@ -4,6 +4,6 @@ version = "0.0.1"
 authors = ["Terkwood"]
 
 [dependencies]
-ggez = "0.4.3"
-imgui = "0.0.18"
-lazy_static = "1.0"
+ggez = {git = "https://github.com/ggez/ggez.git"}
+imgui = "0.7.0"
+lazy_static = "1.4.0"
