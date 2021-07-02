@@ -2,8 +2,11 @@ use draw;
 use ggez::event;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
+use ggez::input;
 use ggez::timer;
 use ggez::{Context, GameResult};
+
+use pixel_math::*;
 
 pub const BOARD_SIZE: usize = 19;
 
@@ -21,16 +24,14 @@ lazy_static! {
     ];
 }
 
-#[allow(dead_code)]
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum Piece {
+pub enum Piece {
     Black,
     White,
 }
 
-#[allow(dead_code)]
 pub struct Board {
-    contents: Vec<Vec<Option<Piece>>>,
+    pub contents: Vec<Vec<Option<Piece>>>,
 }
 
 impl Board {
@@ -40,7 +41,6 @@ impl Board {
     }
 }
 
-#[allow(dead_code)]
 pub struct MainState {
     board: Board,
     current_turn: Piece,
@@ -64,6 +64,7 @@ impl event::EventHandler for MainState {
         while timer::check_update_time(ctx, DESIRED_FPS) {
             // hello
         }
+
         Ok(())
     }
 
@@ -80,5 +81,24 @@ impl event::EventHandler for MainState {
 
         graphics::present(ctx)?;
         Ok(())
+    }
+
+    fn mouse_button_down_event(
+        &mut self,
+        _ctx: &mut Context,
+        button: input::mouse::MouseButton,
+        x: f32,
+        y: f32,
+    ) {
+        if button == input::mouse::MouseButton::Left {
+            let (i, j) = screen_to_board(x, y).unwrap();
+            if self.current_turn == Piece::Black {
+                self.current_turn = Piece::White;
+                self.board.contents[i][j] = Some(Piece::White);
+            } else {
+                self.current_turn = Piece::Black;
+                self.board.contents[i][j] = Some(Piece::Black);
+            }
+        }
     }
 }
