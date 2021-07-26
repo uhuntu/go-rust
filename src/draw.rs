@@ -100,6 +100,8 @@ pub fn add_pieces_to_mesh(mb: &mut MeshBuilder, board: &Board) {
     let mut i;
     let mut j;
 
+    const PURPLE: (u8, u8, u8) = (127, 0, 127);
+
     i = 0;
     for v in &board.contents {
         j = 0;
@@ -114,6 +116,17 @@ pub fn add_pieces_to_mesh(mb: &mut MeshBuilder, board: &Board) {
                     12.0,
                     0.01,
                     Color::BLACK,
+                )
+                .unwrap();
+                mb.circle(
+                    DrawMode::stroke(2.0),
+                    mint::Point2 {
+                        x: MARGIN.0 + POSITION_SIZE.0 * i as f32 + POSITION_SIZE.0 / 2.0,
+                        y: MARGIN.1 + POSITION_SIZE.1 * j as f32 + POSITION_SIZE.1 / 2.0,
+                    },
+                    12.0,
+                    0.01,
+                    PURPLE.into(),
                 )
                 .unwrap();
             } else if vv == &Some(Piece::White) {
@@ -136,7 +149,7 @@ pub fn add_pieces_to_mesh(mb: &mut MeshBuilder, board: &Board) {
                     },
                     12.0,
                     0.01,
-                    Color::BLACK,
+                    PURPLE.into(),
                 )
                 .unwrap();
             }

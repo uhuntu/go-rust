@@ -93,11 +93,11 @@ impl event::EventHandler for MainState {
         if button == input::mouse::MouseButton::Left {
             let (i, j) = screen_to_board(x, y).unwrap();
             if self.current_turn == Piece::Black {
-                self.current_turn = Piece::White;
-                self.board.contents[i][j] = Some(Piece::White);
-            } else {
-                self.current_turn = Piece::Black;
                 self.board.contents[i][j] = Some(Piece::Black);
+                self.current_turn = Piece::White;
+            } else {
+                self.board.contents[i][j] = Some(Piece::White);
+                self.current_turn = Piece::Black;
             }
         }
     }
